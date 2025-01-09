@@ -1,0 +1,87 @@
+@model ContactSellerViewModel;
+@using Aucsystem.Controllers;
+
+@{
+    ViewData["Title"] = $"{Model.FullName}";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Contact Seller</h2>
+
+    <div class="card mb-5">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-4">
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Model.ProfilePicture" alt="@Model.FullName" class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 24px;">
+                        @Model?.FullName?.FirstOrDefault().ToString().ToUpper()
+                    </div>
+                }
+
+                <div>
+                    <h4 class="mb-1 align-items-center">
+                        @Model?.FullName
+                        @if (@Model?.TotalProperties >= 3)
+                        {
+                            <img src="/images/verified.png" alt="Verified" width="22" height="22" class="">
+                        }
+                    </h4>
+                        @if (User.Identity == null)
+                    {
+                        <p class="mb-0">0433*****</p>
+                        <p class="text-muted"><em>Login to see the full phone number</em></p>
+                        <a href="/Account/Login" class="btn btn-primary">Login</a>
+                    }
+                    @if (User.Identity != null && User.Identity.IsAuthenticated){
+                         <p class="mb-0">@Model?.PhoneNumber</p>
+                         <p class="text-muted mb-0">@Model?.Email</p>
+
+                    }
+
+                    <p class="text-muted mb-0">Total Properties Listed: @Model?.TotalProperties</p>
+                    
+                </div>
+            </div>
+           
+        </div>
+        
+    </div>
+    <div class="mt-5">
+        <h2 class="mb-5">Properties Listed by @Model?.FullName</h2>
+        <div class="row">
+            @if (Model?.ListedProperties != null && Model.ListedProperties.Any())
+            {
+                @foreach (var property in Model.ListedProperties)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="@property.ImageUrl1" class="card-img-top" alt="@property.Name" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">@property.Name</h5>
+                                <p class="text-muted">@property.Location</p>
+                                <p class="text-primary fw-bold">@DashboardController.FormatPrice(property.Price)</p>
+                                <a href="/Dashboard/PropertyPage/@property.PropertyId" class="btn btn-primary btn-sm">View Property</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">No properties listed by this seller.</p>
+            }
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+</style>

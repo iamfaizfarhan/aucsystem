@@ -1,0 +1,89 @@
+@using Aucsystem.Controllers;
+@model SettingsViewModel;
+
+@{
+    ViewData["Title"] = "Account Settings";
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordField = document.getElementById("Password");
+        const newPasswordField = document.getElementById("NewPassword");
+        const editPasswordBtn = document.getElementById("edit-password-btn");
+        const cancelPasswordBtn = document.getElementById("cancel-password-btn");
+        const passwordButtons = document.getElementById("password-buttons");
+
+        editPasswordBtn.addEventListener("click", function () {
+            passwordField.classList.add("d-none");
+            newPasswordField.classList.remove("d-none");
+            passwordButtons.classList.remove("d-none");
+            editPasswordBtn.classList.add("d-none");
+        });
+
+        cancelPasswordBtn.addEventListener("click", function () {
+            passwordField.classList.remove("d-none");
+            newPasswordField.classList.add("d-none");
+            passwordButtons.classList.add("d-none");
+            editPasswordBtn.classList.remove("d-none");
+        });
+    });
+</script>
+<div class="container mt-5 mb-5">
+    <h1 class="text-center mb-4">Account Settings</h1>
+
+ 
+
+    <div class=" mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="UpdateSettings">
+
+                <div class="mb-3 text-center">
+                    <label for="ProfilePicture" class="form-label">Profile Picture</label>
+                    <div class="mb-4">
+                        <img src="@Model.ProfilePicture" alt="Avatar" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;" />
+                    </div>
+                    <input type="file" id="ProfilePicture" name="ProfilePicture" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="FullName" class="form-label">Full Name</label>
+                    <input type="text" id="FullName" class="form-control" value="@Model.FullName" readonly disabled/>
+                    <p class="text-black-50 fw-light fst-italic" style="font-size: 15px;">
+                        Note: You are not allowed to change your name.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="email" id="Email" class="form-control" disabled value="@Model.Email" readonly />
+                    <p class="text-black-50 fw-light fst-italic" style="font-size: 15px;">
+                        Note: You are not allowed to change your name.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Password" class="form-label">Password</label>
+                    <div class="d-flex align-items-center">
+                        <input type="password" id="Password" class="form-control me-2" value="********" readonly />
+                        <button type="button" id="edit-password-btn" class="btn btn-primary">Edit</button>
+                        
+                    </div>
+                    <div id="password-buttons" class="mb-5 d-none">
+                        <input type="password" id="NewPassword" name="Password" class="form-control mb-3" placeholder="Enter new password" />
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel-password-btn" class="btn btn-secondary ms-2">Cancel</button>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+
+                </div>
+            </form>
+
+            <div class="mt-5">
+                <p class="text-danger mb-3">Warning ⚠️ Once the account is deleted, you won't get it back.</p>
+                <form method="post" asp-controller="Account" asp-action="DeleteAccount">
+                    <button type="submit" class="btn btn-outline-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

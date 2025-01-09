@@ -1,0 +1,79 @@
+﻿@using System.Security.Principal
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<head>
+    <style>
+        .avatar-circle {
+            background-color: #4b92fc;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-divider {
+            border-color: #ececec !important;
+        }
+
+        .dropdown-item.text-danger {
+            color: #dc3545 !important;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #f8d7da !important;
+        }
+    </style>
+</head>
+
+<ul class="navbar-nav align-items-center ms-auto">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var email = User.Identity?.Name ?? "User";
+        var username = email.Split('@')[0];
+        var initials = username.Length > 1
+            ? string.Join("", username.Take(1).ToArray()).ToUpper()
+            : "U";
+         
+
+        <li class="nav-item dropdown">
+            <li class="nav-item mx-3">
+                <a class="btn text-primary fw-bold" asp-controller="Dashboard" asp-action="RedirectToDashboard">Dashboard</a>
+            </li>
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="avatar-circle text-white me-2" style="width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                    @if (user?.ProfilePicture != null)
+                    {
+                        <img src="@user?.ProfilePicture" width="52" height="44" alt="@user?.FullName's Avatar" class="rounded-circle" style="object-fit: fill;" />
+                    }
+                    else
+                    {
+                        <span>@initials</span>
+                    }
+                </div>
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                <li><a class="dropdown-item" href="/Account/Settings">Settings</a></li>
+                <li><a class="dropdown-item" href="/Dashboard/SavedProperty">Saved Properties</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" action="/Account/Logout" style="display: inline;">
+                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="btn btn-primary me-2" href="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-secondary" href="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

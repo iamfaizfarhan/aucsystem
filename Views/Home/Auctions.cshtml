@@ -1,0 +1,60 @@
+@model List<AuctionViewModel>
+
+@{
+    ViewData["Title"] = "Auction Page";
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="text-center">
+        <h1 class="display-4">No Auctions Available</h1>
+        <p>Please check back later for new auctions.</p>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Auctions Available</h1>
+        <br />
+        <div class="row">
+            @foreach (var auction in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Auction ID: @auction.AuctionId</h5>
+                            <p>
+                                <strong>Start Date:</strong> @auction.StartDate.ToString("MMMM dd, yyyy")<br />
+                                <strong>End Date:</strong> @auction.EndDate.ToString("MMMM dd, yyyy")<br />
+                            </p>
+                            <p>
+                                <strong>Properties and Current Bids:</strong>
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Property Name</th>
+                                            <th>Current Bid</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var property in auction.Properties)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="/Dashboard/PropertyPage/@property.PropertyId" class="text-primary">
+                                                        @property.Name
+                                                    </a>
+                                                </td>
+                                                <td>@property.CurrentBid.ToString("C")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

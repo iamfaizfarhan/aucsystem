@@ -1,0 +1,70 @@
+@using Aucsystem.Models;
+
+@{
+    ViewData["Title"] = "Add Auction";
+    var properties = ViewBag.Properties as List<Aucsystem.Models.Property>;
+    var selectedPropertyId = ViewBag.SelectedPropertyId as int?;
+    var selectedPropertyName = ViewBag.SelectedPropertyName as string;
+    var selectedPropertyPrice = ViewBag.SelectedPropertyPrice as decimal?;
+}
+
+<div class="container">
+    <h2>Add Auction</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+        @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+        <form asp-action="AddAuction" method="post">
+        <div class="form-group">
+            <label for="StartDate">Start Date</label>
+            <input type="datetime-local" id="StartDate" name="StartDate" class="form-control" required />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="EndDate">End Date</label>
+            <input type="datetime-local" id="EndDate" name="EndDate" class="form-control" required />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Properties">Selected Property</label>
+            @if (selectedPropertyId.HasValue)
+            {
+                <input type="text" id="PropertyTitle" class="form-control" value="@selectedPropertyName" disabled />
+                <input type="hidden" name="propertyId" value="@selectedPropertyId" />
+                <input type="text" id="PropertyPrice" class="form-control mt-3" value="Price: @String.Format("{0:C}", selectedPropertyPrice)" disabled />
+            }
+            else
+            {
+                @if (properties != null && properties.Any())
+                {
+                    <select id="Properties" name="propertyId" class="form-control" required>
+                        <option value="">-- Select a Property --</option>
+                        @foreach (var property in properties)
+                        {
+                            <option value="@property.PropertyId">@property.Name</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <p class="text-danger">No properties available to select for an auction.</p>
+                }
+            }
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary mt-3">Create Auction</button>
+            <button type="button" class="btn btn-secondary ml-5 mt-3" onclick="location.href='/Dashboard/SellerDashboard'">Cancel</button>
+        </div>
+    </form>
+</div>

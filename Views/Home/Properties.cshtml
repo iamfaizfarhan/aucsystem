@@ -1,0 +1,212 @@
+@using Aucsystem.Controllers;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@using Aucsystem.Models;
+
+@{
+    ViewData["Title"] = "Properties Page";
+
+    
+}
+
+<script>
+function toggleFavorite(button, propertyId) {
+    fetch('/Dashboard/SaveProperty', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ propertyId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            console.log(data.message);
+            button.classList.toggle('favorite-active'); // Toggle heart color
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+
+
+<div class="container mt-5 text-center">
+    <h2 class="mb-4">Available Properties</h2>
+    <br/>
+    <div class="row">
+        @if (Model != null)
+        {
+            @foreach (var property in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4 text-start">
+                    <div class="card property-card">
+                        @if (!string.IsNullOrEmpty(property.ImageUrl1))
+                        {
+                            <div id="carousel-@property.PropertyId" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="@property.ImageUrl1" class="d-block w-100 rounded-top" alt="@property.Name ?? "No Name"" style="height: 200px; object-fit: cover;">
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(property.ImageUrl2))
+                                    {
+                                        <div class="carousel-item">
+                                            <img src="@property.ImageUrl2" class="d-block w-100 rounded-top" alt="@property.Name ?? "No Name"" style="height: 200px; object-fit: cover;">
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(property.ImageUrl3))
+                                    {
+                                        <div class="carousel-item">
+                                            <img src="@property.ImageUrl3" class="d-block w-100 rounded-top" alt="@property.Name ?? "No Name"" style="height: 200px; object-fit: cover;">
+                                        </div>
+                                    }
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@property.PropertyId" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-@property.PropertyId" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="/images/default-placeholder.jpg" class="d-block w-100 rounded-top" alt="Default Image" style="height: 200px; object-fit: cover;">
+                        }
+
+                        <div class="card-body pointer"  >
+                            <div class=" d-flex justify-content-between align-items-center">
+                                <h5  onclick="location.href='/Dashboard/PropertyPage/@property.PropertyId';" class="card-title fw-bold text-decoration-none  pointer-event mb-0" style="cursor: pointer; font-size: 16px;">
+                                    @if (property.Name != null)
+                                    {
+                                        string[] words = property.Name.Split(' ');
+                                        @string.Join(" ", words.Take(4))
+                                    }
+                                </h5>
+                               
+
+                            </div>
+                           
+                        <p class="text-muted mb-2" style="font-size: 12px;">@property.Location</p>
+                        <p class="fw-bold text-primary">@DashboardController.FormatPrice(property.Price)</p>
+
+                       <div class="d-flex bg-light rounded-1 px-2 py-2 align-items-center mt-3">
+                            @if (property.Seller?.ProfilePicture != null)
+                            {
+                                        <img src="@property?.Seller?.ProfilePicture" 
+                                        width="38" height="38" 
+                                        alt="@property?.Seller?.FullName" 
+                                        class="rounded-circle me-2" 
+                                         />
+                            }
+                            else
+                            {
+                                        <img src="/images/default.jpg"
+                                        width="38" height="38" 
+                                        alt="@property?.Seller?.FullName" 
+                                        class="rounded-circle me-2" 
+                                        />
+                            }
+
+                            <div class="ms-2">
+                                <h6 class="mb-0 align-items-center fw-bold" style="font-size: 14px;">
+                                    @property?.Seller?.FullName
+                                    @if (property?.Seller != null && property?.Seller.TotalProperties >= 1)
+                                    {
+                                        <img src="/images/verified.png" alt="Verified" width="16" height="16" />
+                                    }
+                                </h6>
+                                <small class="text-muted" style="font-size: 12px;">Listed on: @property?.ListedOn?.ToString("MMMM dd, yyyy")</small>
+                            </div>
+                        </div>
+
+                        </div>
+
+                    
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No properties are available at this time.</p>
+        }
+    </div>
+</div>
+
+<style>
+    .property-card {
+    width: 420px;
+    max-width: 100%;
+    height: auto;
+    overflow: hidden; 
+    border: 1px solid #ddd;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+
+
+.favorite-icon.filled .heart {
+    fill: #ff0000; 
+    background-color: #ff0000;
+    stroke: #ff0000; 
+}
+
+.favorite-icon.unfilled .heart {
+    fill: black; 
+    stroke: #000; 
+}
+.property-card .card-title {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.property-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+    .card {
+        border: 1px solid #ddd;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .carousel-inner img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-footer .btn {
+        margin: 0 5px;
+    }
+
+    .btn:focus{
+        outline: none;
+        box-shadow: none;
+    }
+
+  .btn{
+        outline: none;
+        box-shadow: none;
+    }
+
+    .rounded-circle {
+        border: 1px solid #ddd;
+    }
+
+
+    .btn {
+        background: none;
+        border: none;
+    }
+</style>

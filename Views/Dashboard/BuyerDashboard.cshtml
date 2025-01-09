@@ -1,0 +1,56 @@
+@model IEnumerable<Bid>    
+@using Aucsystem.Controllers;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager;
+
+@{
+    ViewData["Title"] = "Buyer Dashboard";
+    var currentUser = await UserManager.GetUserAsync(User);
+
+}
+
+
+<div class="container mt-5">
+      <div class="banner position-relative text-white" style="background: linear-gradient(90deg, rgba(0, 123, 255, 0.246), rgba(0, 81, 180, 0.277)), url('/images/banner.jpg') no-repeat center center/cover; height: 200px; width: 100%; display: flex; align-items: center; padding: 20px; border-radius: 8px;">
+        <div>
+            <h1 class="fw-bold">Buyers Dashboard</h1>
+            <p class="mb-0">Welcome back, @currentUser?.FullName!</p>
+        </div>
+    </div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-4 text-center" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    <br/>
+    <h2 class="mt-5 mb-3">Your Bids</h2>
+
+    @if (Model.Any())
+    {
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Property Name</th>
+                    <th>Bid Amount</th>
+                    <th>Bid Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bid in Model)
+                {
+                    <tr>
+                    <td style="text-decoration: none; color: black; text-transform: capitalize; cursor: pointer; font-size: 14px;" onclick="location.href='/Dashboard/PropertyPage/@bid?.Property?.PropertyId'">
+                    @bid?.Property?.Name
+                    <td style="font-size: 14px;">@bid?.Amount.ToString("C0", new System.Globalization.CultureInfo("en-AU"))</td>
+                        <td  style="font-size: 14px;">@bid?.BidTime.ToString("MMMM dd, yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No bids placed yet.</p>
+    }
+</div>
