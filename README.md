@@ -7,7 +7,7 @@ Aucsystem is a **real estate auction management system** designed and developed 
 ## 🚀 Project Overview
 
 - **Designed and Built By**: Muhammad Faiz Khan (20020964)  
-- **Entity-Relationship Diagrams (ERDs)**: Yasa Shaikh (29922498), Ahmad Ali (20020322)  
+- **Entity-Relationship Diagrams (ERDs)**: Yasa Shaikh (20022498), Ahmad Ali (20020322)  
 - **Group Report, Idea, and Collaboration**: Wamiq Baid (12300337)  
 - **Supervisor/Professor**: Umesh Poudel  
 
