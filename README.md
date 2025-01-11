@@ -1,6 +1,6 @@
 # 🏠 Aucsystem: Real Estate Auction Management System
 
-Aucsystem is a **real estate auction management system** designed and developed as part of the **Web Design and Development (ICT272)** course at **APIC**. This project includes **role-based authentication** for Buyers and Sellers, enabling functionalities like adding properties, bidding on properties, managing auctions, and more.
+Aucsystem is a **real estate auction management system** designed and developed as part of the **Web Design and Development (ICT272)** course at **KOI**. This project includes **role-based authentication** for Buyers and Sellers, enabling functionalities like adding properties, bidding on properties, managing auctions, and more.
 
 ---
 
